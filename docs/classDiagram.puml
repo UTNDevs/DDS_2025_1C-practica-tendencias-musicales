@@ -1,0 +1,54 @@
+@startuml
+class Artista {
+    - nombre : String
+}
+
+class Album {
+    - nombre : String
+    - artista : Artista
+    - anio : Integer
+}
+
+class Cancion {
+ - titulo : String
+ - cantLikes : Integer
+ - cantDislikes : Integer
+ - fechaUltReproduccion : Date
+ - artista : String
+ - album : String
+ - anioAlbum : String
+ - popularidad : Popularidad
+ - cantReproducciones : Integer
+ + serEscuchada() : String
+ + recibirLikes() : void
+ + recibirDislikes() : void
+
+}
+
+abstract class Popularidad{
+  - cantReproduccionesEnPopularidadActual : Integer
+  - cantReproduccionesEnPopularidad : Integer
+
+   + reproducir(cancion) : void
+   + detallePara(cancion) : String
+   # leyendaPara(cancion) : String
+   # icono() : String
+}
+
+class Normal extends Popularidad{
+}
+
+class EnAuge extends Popularidad {
+}
+
+class EnTendencia extends Popularidad {
+}
+
+Cancion o--> Album
+Cancion o-->Popularidad
+
+Album o--> Artista
+
+
+
+@enduml
