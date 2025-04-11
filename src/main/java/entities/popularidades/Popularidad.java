@@ -4,13 +4,18 @@ import entities.catalogo.Cancion;
 
 public abstract class Popularidad {
 
-  public String detallePara(Cancion cancion){
-    return this.icono() + " - " + this.leyendaPara(cancion);
-  }
-
   public abstract void reproducir(Cancion cancion);
 
-  protected abstract String leyendaPara(Cancion cancion);
-
   protected abstract String icono();
+  protected abstract String leyenda(Cancion cancion);
+
+  public String detalle(Cancion cancion) {
+    String titulo = this.icono();
+    titulo += this.leyenda(cancion);
+    return titulo;
+  }
+
+  public void recibirDislike() {
+
+  }
 }

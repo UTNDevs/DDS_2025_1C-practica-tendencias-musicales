@@ -2,20 +2,29 @@ package entities.popularidades;
 
 import entities.catalogo.Cancion;
 import helpers.Icono;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class EnTendencia extends Popularidad {
-  private Integer cantReproduccionesEnPopularidadActual = 0;
+  public static Integer cantHorasSinEscucharParaBajarPopularidad = 24;
+  @Setter
+  private LocalDateTime fechaAComparar;
 
-  public EnTendencia() {
+  public LocalDateTime getFechaAComparar() {
+    return fechaAComparar == null? LocalDateTime.now() : this.fechaAComparar;
   }
 
   @Override
-  public void reproducir(Cancion cancion){
+  public void reproducir(Cancion cancion) {
+    if(this.hanPasadoMasDeHsDesde( cancion.getUltVezEscuchada(), cantHorasSinEscucharParaBajarPopularidad)) {
+      cancion.setPopularidad(new Normal(cancion.getCantReproducciones()));
+    }
   }
 
-  @Override
-  protected String leyendaPara(Cancion cancion) {
-    return cancion.getNombre() + " - " + cancion.getAlbum().getArtista().getNombre() + " ( " + cancion.getAlbum().getNombre() + " - " + cancion.getAlbum().getAnio() + " ) ";
+  private Boolean hanPasadoMasDeHsDesde(LocalDateTime fechaHora, int horas) {
+    return ChronoUnit.HOURS.between(fechaHora, this.getFechaAComparar()) >= horas;
   }
 
   @Override
@@ -23,4 +32,12 @@ public class EnTendencia extends Popularidad {
     return Icono.FIRE.texto();
   }
 
+  @Override
+  protected String leyenda(Cancion cancion) {
+    return armarLeyendaPara(cancion);
+  }
+
+  public static String armarLeyendaPara(Cancion cancion) {
+    return String.format("%s - %s (%s - %d)", cancion.getTitulo(), cancion.getArtista().getNombre(), cancion.getAlbum().getNombre(), cancion.getAnio());
+  }
 }

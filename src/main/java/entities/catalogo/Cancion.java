@@ -7,34 +7,54 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+
 public class Cancion {
-  private String nombre;
-  private Integer cantLikes;
-  private Integer cantDislikes;
-  private LocalDateTime fechaUltimaRepro;
-  private Album album;
-  private Integer cantReproduccionesEnPopularidad;
-  private Popularidad popularidad;
+  @Setter @Getter private String titulo;
 
+  @Setter @Getter private Artista artista;
 
-  public Cancion(String nombre, Album album) {
-    this.album = album;
-    this.nombre = nombre;
-    this.cantReproduccionesEnPopularidad = 0;
-    this.popularidad = new Normal();
+  @Setter @Getter private Album album;
+
+  @Setter @Getter private Integer anio;
+
+  @Setter @Getter private Integer cantLikes;
+
+  @Setter @Getter private Integer cantDislikes;
+
+  @Getter private Integer cantReproducciones;
+
+  @Getter @Setter private Popularidad popularidad;
+
+  @Getter private LocalDateTime ultVezEscuchada;
+
+  public Cancion() {
+    this.cantReproducciones = 0;
+    this.cantLikes = 0;
+    this.cantDislikes = 0;
+    this.popularidad = new Normal(this.cantReproducciones);
   }
 
-  public void recibirLikes() {
-    cantLikes++;
+  public String detalleCompleto() {
+    return this.popularidad.detalle(this);
   }
 
-  public void recibirDislikes() {
-    cantDislikes++;
+  public void reproducir() {
+    this.cantReproducciones++;
+    this.popularidad.reproducir(this);
+    this.ultVezEscuchada = LocalDateTime.now();
+  }
+
+  public void recibirLike() {
+    this.cantLikes++;
+  }
+
+  public void recibirDislike() {
+    this.cantDislikes++;
+    this.popularidad.recibirDislike();
   }
 
   public String serEscuchada() {
-    return this.popularidad.detallePara(this);
+    this.reproducir();
+    return this.detalleCompleto();
   }
 }
